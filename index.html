@@ -560,7 +560,6 @@
                 "exec-6-role": "Public Relations Officer",
                 "exec-7-role": "Adviser",
                 "exec-8-role": "Auditor",
-                "exec-pend": "Position Active",
                 "member-tag": "Join Our Cause",
                 "member-heading": "Membership Criteria",
                 "member-desc": "Membership to the Naalex Foundation is open to all individuals who share our vision and are dedicated to selfless service:",
@@ -649,7 +648,6 @@
                 "exec-6-role": "Chargé des Relations Publiques",
                 "exec-7-role": "Conseiller",
                 "exec-8-role": "Auditeur",
-                "exec-pend": "Poste Actif",
                 "member-tag": "Rejoignez Notre Cause",
                 "member-heading": "Critères d'Adhésion",
                 "member-desc": "L'adhésion à la Fondation Naalex est ouverte à toutes les personnes qui partagent notre vision et se consacrent au service désintéressé :",
@@ -699,14 +697,37 @@
             });
         }
 
-        // Web3Forms Review Submission and Instant UI Publishing Handler
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("web3-review-form");
+        function renderReviewCard(name, role, message) {
             const reviewsGrid = document.getElementById("reviews-grid");
-            const statusText = document.getElementById("form-status");
+            if (!reviewsGrid) return;
+            const initial = name ? name.charAt(0).toUpperCase() : "U";
+            const cardHTML = `
+                <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-amber-400 mb-4 space-x-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-700 italic mb-6 leading-relaxed">"${message}"</p>
+                    </div>
+                    <div class="border-t border-slate-200 pt-4 flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-emerald-700 text-white font-bold rounded-full flex items-center justify-center">${initial}</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900">${name}</h4>
+                            <span class="text-xs text-slate-500">${role}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            reviewsGrid.insertAdjacentHTML('beforeend', cardHTML);
+        }
 
+        // DOM Content Loaded Execution
+        document.addEventListener("DOMContentLoaded", () => {
             const storedReviews = JSON.parse(localStorage.getItem("naalex_dynamic_reviews") || "[]");
             storedReviews.forEach(r => renderReviewCard(r.name, r.role, r.message));
+
+            const form = document.getElementById("web3-review-form");
+            const statusText = document.getElementById("form-status");
 
             if (form) {
                 form.addEventListener("submit", function(e) {
@@ -744,28 +765,6 @@
                         statusText.className = "text-center text-xs mt-2 font-semibold text-red-600";
                     });
                 });
-            }
-
-            function renderReviewCard(name, role, message) {
-                const initial = name ? name.charAt(0).toUpperCase() : "U";
-                const cardHTML = `
-                    <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div class="flex text-amber-400 mb-4 space-x-1">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                            </div>
-                            <p class="text-slate-700 italic mb-6 leading-relaxed">"${message}"</p>
-                        </div>
-                        <div class="border-t border-slate-200 pt-4 flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-emerald-700 text-white font-bold rounded-full flex items-center justify-center">${initial}</div>
-                            <div>
-                                <h4 class="text-sm font-bold text-slate-900">${name}</h4>
-                                <span class="text-xs text-slate-500">${role}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                reviewsGrid.insertAdjacentHTML('beforeend', cardHTML);
             }
         });
     </script>
